@@ -1,12 +1,13 @@
 <ion-menu [content]="content">
 
-  <ion-toolbar>
+  <ion-toolbar yellow no-border-bottom>
     <ion-title>Menu</ion-title>
   </ion-toolbar>
 
   <ion-content>
-    <ion-list>
+    <ion-list inset>
       <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)">
+        <ion-icon [name]="p.icon" item-left large iconmenu></ion-icon>
         {{p.title}}
       </button>
     </ion-list>

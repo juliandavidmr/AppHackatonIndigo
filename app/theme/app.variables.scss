@@ -26,10 +26,28 @@
 // are different per mode.
 
 $colors: (
-  primary:    #387ef5,
-  secondary:  #32db64,
-  danger:     #f53d3d,
-  light:      #f4f4f4,
-  dark:       #222,
-  favorite:   #69BB7B
+  primary: #007aff,
+  secondary: #32db64,
+  danger: #f22613,
+  light: #f4f4f4,
+  dark: #222,
+  favorite: #69BB7B,
+  stable: #F4F5F7,
+  positive: #198DE0,
+  calm: #5B99FE,
+  balanced: #4C9689,
+  energized: #FDAC51,
+  assertive: #E86244,
+  royal: #4D394B,
+  //dark: #2B3541,
+  //colorselect: #f22613
+  //colorselect: #F4F5F7
+  //colorselect: #d91e18,
+  azul: #00a7d0,
+  badgemap: #14aed4,
+  badgestar: #fdac51,
+  yellow: #ffc107,
+  iconmenu: #ff9800
 );
+
+$menu-width: 210px;

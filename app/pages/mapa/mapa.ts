@@ -16,10 +16,35 @@ export class MapaPage {
   directionsService: any;
   directionsDisplay: any;
   listRutas: any = [];
+  listCiudades: any = [
+    'Leticia',
+    'Medellin',
+    'Arauca',
+    'Cartagena',
+    'Tunja',
+    'Manizales',
+    'Florencia',
+    'Curillo',
+    'Yopal',
+    'Aguazul',
+    'Popayan',
+    'Altamira',
+    'Valledupar',
+    'Quibdo',
+    'Rioacha',
+    'Bogotá',
+    'Bosa',
+    'Neiva',
+    'Guaviare'
+  ];
+
+  visitar: any; // Listado de las ciudades y lugares dsiponibles para visitar
+  desde: any; // Nombre de la cuidad a visitar
+  hasta: any; // Hasta donde se quiere ir
 
   mapInitialised: boolean = false;
   apiKey: any;
-  loader: any;
+  loader: any; // Componente de carga
   unidad: any; // Informacion de un recurso fisico seleccionado
   sede: any; // Informacion de una sede seleccionada
   title: string = 'Mapa';
@@ -98,7 +123,6 @@ export class MapaPage {
         this.loader.dismiss();
       }
     }
-
   }
 
   initMap() {
@@ -180,67 +204,51 @@ export class MapaPage {
         this.directionsDisplay = new google.maps.DirectionsRenderer;
         this.directionsDisplay.setMap(this.map);
 
-
-        this.calculateAndDisplayRoute(this.directionsService, this.directionsDisplay);
-
-        console.log('=======>', this.directionsService);
+        // console.log('=======>', this.directionsService);
       }
     });
+  }
+
+  calcularRuta() {
+    console.log('Calculando ruta...');
+
+    this.presentAlert('Calculando ruta', 'Calculando ruta, por favor espere...');
+
+    console.log('Visitar: ', this.visitar);
+    if (this.desde && this.hasta) {
+      this.calculateAndDisplayRoute(this.directionsService, this.directionsDisplay);
+    }
   }
 
   calculateAndDisplayRoute(directionsService, directionsDisplay) {
     var waypts = [];
 
-    /***
-      <option value="montreal, quebec">Montreal, QBC</option>
-      <option value="toronto, ont">Toronto, ONT</option>
-      <option value="chicago, il">Chicago</option>
-      <option value="winnipeg, mb">Winnipeg</option>
-      <option value="fargo, nd">Fargo</option>
-      <option value="calgary, ab">Calgary</option>
-      <option value="spokane, wa">Spokane</option>
-     */
-
-    waypts.push({
-      location: 'montreal, quebec',
-      stopover: true
-    });
-
-    waypts.push({
-      location: 'winnipeg, mb',
-      stopover: true
+    this.visitar.map(item => {
+      waypts.push({
+        location: item + ', Colombia',
+        stopover: true
+      });
     });
 
     directionsService.route({
-      origin: 'Neiva, Huila, Colombia',
-      destination: 'Bogota, Colombia',
-      // waypoints: waypts,
-      waypoints: [],
+      origin: this.desde + ', Colombia',
+      destination: this.hasta + ', Colombia',
+      waypoints: waypts,
       optimizeWaypoints: true,
       travelMode: google.maps.TravelMode.DRIVING
     }, (response, status) => {
       console.log('Resultado de rutas: ', response, status);
+      this.loader.dismiss();
 
       if (status === google.maps.DirectionsStatus.OK) {
         directionsDisplay.setDirections(response);
         var route = response.routes[0];
-        var summaryPanel = document.getElementById('directions-panel');
-        summaryPanel.innerHTML = '';
-        // For each route, display summary information.
 
         this.listRutas = route.legs;
-        /**for (var i = 0; i < route.legs.length; i++) {
-
-          var routeSegment = i + 1;
-          summaryPanel.innerHTML += '<b>Route Segment: ' + routeSegment +
-            '</b><br>';
-          summaryPanel.innerHTML += route.legs[i].start_address + ' to ';
-          summaryPanel.innerHTML += route.legs[i].end_address + '<br>';
-          summaryPanel.innerHTML += route.legs[i].distance.text + '<br><br>';
-        }
-        */
+        console.log('Rutas: ', this.listRutas);
       } else {
-        alert('Directions request failed due to ' + status);
+        this.presentAlert('Sin rutas!', 'En estos momentos no hay rutas para los sitios seleccionados. Puede intentar seleccionar otros distintos.');
+        // alert('Directions request failed due to ' + status);
       }
     });
   }
@@ -265,8 +273,6 @@ export class MapaPage {
 
     return marker;
   }
-
-
 
   private getUrlIcon(name: string) {
     switch (name) {
@@ -329,5 +335,4 @@ export class MapaPage {
     });
     alert.present();
   }
-
 }

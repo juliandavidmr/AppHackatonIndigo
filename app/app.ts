@@ -5,7 +5,6 @@ import { StatusBar } from 'ionic-native';
 import { AcercadePage } from './pages/acercade/acercade';
 import { MapaPage } from './pages/mapa/mapa';
 import { ServiciosPage } from './pages/servicios/servicios';
-import { TrazarPage } from './pages/trazar/trazar';
 
 import { ConnectivityService } from './providers/connectivity-service/connectivity-service';
 
@@ -17,17 +16,16 @@ class MyApp {
 
   rootPage: any = ServiciosPage;
 
-  pages: Array<{title: string, component: any}>;
+  pages: Array<{title: string, component: any, icon: string}>;
 
   constructor(public platform: Platform) {
     this.initializeApp();
 
     // used for an example of ngFor and navigation
     this.pages = [
-      { title: 'Contactos', component: ServiciosPage },
-      { title: 'Mapa', component: MapaPage },
-      { title: 'Trazar ruta', component: TrazarPage },
-      { title: 'Información', component: AcercadePage }
+      { title: 'Sitios', component: ServiciosPage, icon: 'ios-train-outline' },
+      { title: 'Mapa', component: MapaPage, icon: 'ios-navigate-outline' },
+      { title: 'Información', component: AcercadePage, icon: 'ios-information-circle-outline' }
     ];
 
   }
@@ -47,4 +45,6 @@ class MyApp {
   }
 }
 
-ionicBootstrap(MyApp, [ConnectivityService]);
+ionicBootstrap(MyApp, [ConnectivityService], {
+  mode: 'md'
+});
