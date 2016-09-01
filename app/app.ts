@@ -5,6 +5,7 @@ import { StatusBar } from 'ionic-native';
 import { AcercadePage } from './pages/acercade/acercade';
 import { MapaPage } from './pages/mapa/mapa';
 import { ServiciosPage } from './pages/servicios/servicios';
+import { TrazarPage } from './pages/trazar/trazar';
 
 import { ConnectivityService } from './providers/connectivity-service/connectivity-service';
 
@@ -25,6 +26,7 @@ class MyApp {
     this.pages = [
       { title: 'Contactos', component: ServiciosPage },
       { title: 'Mapa', component: MapaPage },
+      { title: 'Trazar ruta', component: TrazarPage },
       { title: 'Información', component: AcercadePage }
     ];
 

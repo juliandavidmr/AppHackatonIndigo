@@ -3,7 +3,6 @@ import { NavController, NavParams, ModalController, ToastController, LoadingCont
 
 import { ServicioDetallePage } from '../servicio-detalle/servicio-detalle';
 import { MapaPage } from '../mapa/mapa';
-import { FavoritosPage } from '../favoritos/favoritos';
 
 import { Servicios } from '../../providers/servicios/servicios';
 
@@ -115,10 +114,5 @@ export class ServiciosPage {
   // Abrir mapa con un solo item
   openMap(servicio_params) {
     this.pushPage(MapaPage, { selected: servicio_params });
-  }
-
-  // Abrir mapa con un solo item
-  openFavoritos() {
-    this.pushPage(FavoritosPage, {});
   }
 }
