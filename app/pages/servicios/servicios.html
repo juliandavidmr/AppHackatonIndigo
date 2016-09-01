@@ -1,0 +1,84 @@
+<ion-header class="opaque">
+  <ion-navbar colorselect no-border-bottom>
+    <button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+
+    <ion-segment colorselect [(ngModel)]="tipobusqueda" no-border-bottom>
+      <ion-segment-button value="all">
+        Todo
+      </ion-segment-button>
+      <ion-segment-button value="fast">
+        Simple
+      </ion-segment-button>
+    </ion-segment>
+
+    <ion-buttons colorselect end no-border-bottom>
+      <button (click)="openFavoritos()">
+        <ion-icon ios="ios-heart" md="md-heart"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+  <ion-toolbar colorselect no-border-top>
+    <ion-searchbar [(ngModel)]="searchQuery" (ionInput)="getItems($event)" placeholder="Buscar por nombre, descripción..."></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-list-header *ngIf="!listServicios">
+    Conectate a Internet para acceder a los contactos.
+  </ion-list-header>
+
+  <ion-list [virtualScroll]="listServicios">
+    <ion-item-sliding *virtualItem="let item">
+      <ion-item (click)="openDetalleServicio(item)">
+        <h2 *ngIf="item.Nombre">
+          {{item.Nombre.toUpperCase()}}
+        </h2>
+        <h3 *ngIf="item.DescripcionCom">
+          {{item.DescripcionCom}}
+        </h3>
+        <p *ngIf="item.Telefono">
+          {{item.Telefono}}
+        </p>
+        <ion-badge *ngIf="item.Stars !== 0 && tipobusqueda == 'all'" item-right star>
+          {{item.Stars}}
+        </ion-badge>
+        <ion-badge *ngIf="item.Latitud != '' && tipobusqueda == 'all'" item-right badgemap>
+          Map
+        </ion-badge>
+      </ion-item>
+      <ion-item-options side="right">
+        <button primary (click)="openMap(item)">
+          <ion-icon ion-icon-star name="pin"></ion-icon>
+          Mapa
+        </button>
+        <button secondary (click)="openDetalleServicio(item)">
+          <ion-icon name="bookmark"></ion-icon>
+          Info
+        </button>
+        <button danger (click)="marcarFavorito(item)">
+          <ion-icon name="heart"></ion-icon>
+          Me gusta
+        </button>
+      </ion-item-options>
+      <ion-item-options side="left" *ngIf="item.Telefono">
+        <button positive>
+          <span>
+            <a href="tel:{{item.Telefono}}" style="color: white;">
+              <ion-icon name="call"></ion-icon>
+              <br>
+              Llamar
+              {{item.Telefono}}
+            </a>
+          </span>
+        </button>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+
+  <ion-list-header>
+    El Independiente
+  </ion-list-header>
+</ion-content>
