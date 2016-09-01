@@ -5,6 +5,7 @@ import { StatusBar } from 'ionic-native';
 import { AcercadePage } from './pages/acercade/acercade';
 import { MapaPage } from './pages/mapa/mapa';
 import { ServiciosPage } from './pages/servicios/servicios';
+import { CercanosPage } from './pages/cercanos/cercanos';
 
 import { ConnectivityService } from './providers/connectivity-service/connectivity-service';
 
@@ -24,6 +25,7 @@ class MyApp {
     // used for an example of ngFor and navigation
     this.pages = [
       { title: 'Sitios', component: ServiciosPage, icon: 'ios-train-outline' },
+      { title: 'Cercanos', component: CercanosPage, icon: 'ios-magnet-outline' },
       { title: 'Mapa', component: MapaPage, icon: 'ios-navigate-outline' },
       { title: 'Información', component: AcercadePage, icon: 'ios-information-circle-outline' }
     ];

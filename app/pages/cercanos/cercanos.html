@@ -1,21 +1,27 @@
-<ion-header class="opaque">
+<ion-header>
   <ion-navbar primary no-border-bottom>
     <button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-
-    <ion-segment [(ngModel)]="tipobusqueda" no-border-bottom>
-      <ion-searchbar [(ngModel)]="searchQuery" (ionInput)="getItems($event)" placeholder="Buscar por nombre, descripción..."></ion-searchbar>
-    </ion-segment>
+    <ion-title>Cercanos</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-  <ion-list-header *ngIf="!listServicios">
+  <ion-list-header *ngIf="!listCercanos">
     Conectate a Internet para acceder a los sitios.
   </ion-list-header>
 
-  <ion-list [virtualScroll]="listServicios">
+  <ion-list>
+
+    <ion-item>
+      <ion-label floating>Radio (Kilómetros)</ion-label>
+      <ion-input type="number" [(ngModel)]="radio" (ngModelChange)="typing()"></ion-input>
+    </ion-item>
+
+  </ion-list>
+
+  <ion-list [virtualScroll]="listCercanos">
     <ion-item-sliding *virtualItem="let item">
       <ion-item (click)="openDetalleServicio(item)">
         <h2 *ngIf="item.Nombre">

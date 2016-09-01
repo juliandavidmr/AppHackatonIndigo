@@ -12,6 +12,8 @@ declare var google;
 export class MapaPage {
   @ViewChild('map') mapElement: ElementRef;
 
+  segment: string = 'rutas';
+
   map: any;
   directionsService: any;
   directionsDisplay: any;
@@ -194,12 +196,14 @@ export class MapaPage {
         this.addMarker(this.sede.nombresede, this.sede.posicion.x, this.sede.posicion.y, 'pin');
         this.title = this.sede.nombresede;
       } else { // Cargar todos los puntos del mapa si no se ha seleccionado unidad y sede
-        /*this.localStorage.get('recursos').then((recusos_list) => {
+        /*
+        this.localStorage.get('recursos').then((recusos_list) => {
           let aux = JSON.parse(recusos_list);
           aux.map(item => {
             this.addMarker(item.nombrerecurso, item.posicion.x, item.posicion.y, 'pin');
           });
-        });*/
+        });
+        */
         this.directionsService = new google.maps.DirectionsService;
         this.directionsDisplay = new google.maps.DirectionsRenderer;
         this.directionsDisplay.setMap(this.map);
@@ -212,11 +216,14 @@ export class MapaPage {
   calcularRuta() {
     console.log('Calculando ruta...');
 
-    this.presentAlert('Calculando ruta', 'Calculando ruta, por favor espere...');
+    this.showLoading('Calculando ruta, por favor espere...');
 
     console.log('Visitar: ', this.visitar);
     if (this.desde && this.hasta) {
       this.calculateAndDisplayRoute(this.directionsService, this.directionsDisplay);
+    } else {
+      this.loader.dismiss();
+      this.presentAlert('Campos requeridos!', 'Los campos desde y hasta, son requeridos.');
     }
   }
 
@@ -247,7 +254,20 @@ export class MapaPage {
         this.listRutas = route.legs;
         console.log('Rutas: ', this.listRutas);
       } else {
-        this.presentAlert('Sin rutas!', 'En estos momentos no hay rutas para los sitios seleccionados. Puede intentar seleccionar otros distintos.');
+        switch (status) {
+          case 'ZERO_RESULTS':
+            this.presentAlert('Sin rutas!', 'En estos momentos no hay rutas para los sitios seleccionados.');
+            break;
+          case 'NOT_FOUND':
+            this.presentAlert('Sitio no encontrado!', 'No se ha podido trazar una ruta a uno de los sitios. Puede intentar seleccionar otros distintos.');
+            break;
+          case 'MAX_WAYPOINTS_EXCEEDED':
+            this.presentAlert('Muchos sitios seleccionados!', 'La cantidad de sitios a visitar ha excedido el límite. Intente seleccionando menos de 8 sitios.');
+            break;
+          default:
+            this.presentAlert('Sin rutas!', 'En estos momentos no hay rutas para los sitios seleccionados.');
+            break;
+        }
         // alert('Directions request failed due to ' + status);
       }
     });

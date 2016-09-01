@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, ModalController, ToastController, LoadingController } from 'ionic-angular';
+import { Geolocation } from 'ionic-native';
 
 import { ServicioDetallePage } from '../servicio-detalle/servicio-detalle';
 import { MapaPage } from '../mapa/mapa';
@@ -7,17 +8,20 @@ import { MapaPage } from '../mapa/mapa';
 import { Servicios } from '../../providers/servicios/servicios';
 
 @Component({
-  templateUrl: 'build/pages/servicios/servicios.html',
+  templateUrl: 'build/pages/cercanos/cercanos.html',
   providers: [
     [Servicios]
   ]
 })
-export class ServiciosPage {
+export class CercanosPage {
 
-  listServicios: any;
-  listServicios_aux: any;
+  listCercanos: any;
+  listCercanos_aux: any;
 
   loading: any;
+
+  miPosicion: any;
+  radio: number;
 
   constructor(
     private navCtrl: NavController,
@@ -30,14 +34,23 @@ export class ServiciosPage {
   }
 
   onPageDidEnter() {
-    this.loadData();
+    Geolocation.getCurrentPosition().then(pos => {
+      console.log('lat: ' + pos.coords.latitude + ', lon: ' + pos.coords.longitude);
+      this.miPosicion = pos.coords;
+
+      this.loadData();
+    }).catch(err => {
+      this.loading.dismiss();
+
+      this.presentToast('No se ha podido obtener tu posicion. Verfica que tengas el GPS activado.', 3000);
+    });
   }
 
   loadData() {
     this.servicios.load().then((data) => {
       console.log('Data: ', data);
-      this.listServicios = data;
-      this.listServicios_aux = data;
+      this.listCercanos = data;
+      this.listCercanos_aux = data;
 
       this.loading.dismiss();
     }).catch(err => {
@@ -46,7 +59,49 @@ export class ServiciosPage {
   }
 
   initializeItems() {
-    this.listServicios = this.listServicios_aux; // Esto es para evitar que los datos originales se eliminen en la busqueda del metodo 'getItems'
+    this.listCercanos = this.listCercanos_aux; // Esto es para evitar que los datos originales se eliminen en la busqueda del metodo 'getItems'
+  }
+
+  typing() {
+    console.log('Radio: ', this.radio);
+
+    this.initializeItems();
+
+    if (this.radio) {
+      this.listCercanos = this.listCercanos.filter((v) => {
+        if (v.Latitud) {
+          let distanceUser = 0;
+          distanceUser = this.calcDistancia({
+            latitud: parseFloat(v.Latitud),
+            longitud: parseFloat(v.Longitud)
+          });
+
+          console.log('Distancia calculada: ', distanceUser);
+          return (distanceUser <= this.radio);
+        }
+        return false;
+      });
+    }
+  }
+
+  calcDistancia(punto = { latitud: 0, longitud: 0 }) {
+    let distance = this.getDistanceFromLatLonInKm(punto.latitud, punto.longitud, this.miPosicion.latitude, this.miPosicion.longitude);
+
+    return distance;
+  }
+
+  getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+    var R = 6378.137;
+    var dLat = (lat2 - lat1) * (Math.PI / 180);
+    var dLon = (lon2 - lon1) * (Math.PI / 180);
+    var a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * (Math.PI / 180)) *
+      Math.cos(lat2 * (Math.PI / 180)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    var d = R * c;
+    return d;
   }
 
   getItems(searchbar) {
@@ -60,7 +115,7 @@ export class ServiciosPage {
       return;
     }
 
-    this.listServicios = this.listServicios.filter((v) => {
+    this.listCercanos = this.listCercanos.filter((v) => {
       if (v.Nombre) {
         if (v.Nombre.toLowerCase().indexOf(q.toLowerCase()) > -1) {
           return true;
