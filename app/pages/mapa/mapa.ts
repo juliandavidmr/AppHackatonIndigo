@@ -19,25 +19,44 @@ export class MapaPage {
   directionsDisplay: any;
   listRutas: any = [];
   listCiudades: any = [
-    'Leticia',
-    'Medellin',
-    'Arauca',
-    'Cartagena',
-    'Tunja',
-    'Manizales',
-    'Florencia',
-    'Curillo',
-    'Yopal',
+    'Acevedo',
     'Aguazul',
-    'Popayan',
+    'Albania',
     'Altamira',
-    'Valledupar',
-    'Quibdo',
-    'Rioacha',
+    'Arauca',
+    'Armenia',
+    'Balboa',
+    'Barranquilla',
     'Bogotá',
     'Bosa',
+    'Cali',
+    'Candelaria',
+    'Cartagena',
+    'Cucúta',
+    'Curillo',
+    'Florencia',
+    'Fontibon',
+    'Galapa',
+    'Guaviare',
+    'Leticia',
+    'Manizales',
+    'Medellin',
+    'Mocoa',
+    'Montería',
     'Neiva',
-    'Guaviare'
+    'Orito',
+    'Pasto',
+    'Pereira',
+    'Popayan',
+    'Quibdo',
+    'Quibdó',
+    'Rioacha',
+    'Sincelejo',
+    'Soacha',
+    'Tunja',
+    'Valledupar',
+    'Villavicencio',
+    'Yopal'
   ];
 
   visitar: any; // Listado de las ciudades y lugares dsiponibles para visitar
@@ -71,9 +90,6 @@ export class MapaPage {
   loadAll() {
     this.unidad = this._navParams.data.unidad;
     this.sede = this._navParams.data.sede;
-
-    console.log('Unidad=>', this.unidad);
-    console.log('Sede  =>', this.sede);
 
     this.showLoading('Cargando mapa...');
 
@@ -125,6 +141,11 @@ export class MapaPage {
         this.loader.dismiss();
       }
     }
+  }
+
+  ngOnDestroy() {
+    this.directionsDisplay.setMap(null); // clear direction from the map
+    this.directionsDisplay.setPanel(null);
   }
 
   initMap() {
@@ -245,7 +266,6 @@ export class MapaPage {
       travelMode: google.maps.TravelMode.DRIVING
     }, (response, status) => {
       console.log('Resultado de rutas: ', response, status);
-      this.loader.dismiss();
 
       if (status === google.maps.DirectionsStatus.OK) {
         directionsDisplay.setDirections(response);
@@ -264,12 +284,17 @@ export class MapaPage {
           case 'MAX_WAYPOINTS_EXCEEDED':
             this.presentAlert('Muchos sitios seleccionados!', 'La cantidad de sitios a visitar ha excedido el límite. Intente seleccionando menos de 8 sitios.');
             break;
-          default:
+          case 'UNKNOWN_ERROR':
+            this.loader.dismiss();
             this.presentAlert('Sin rutas!', 'En estos momentos no hay rutas para los sitios seleccionados.');
+            break;
+          default:
             break;
         }
         // alert('Directions request failed due to ' + status);
       }
+
+      this.loader.dismiss();
     });
   }
 

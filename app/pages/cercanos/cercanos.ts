@@ -30,7 +30,7 @@ export class CercanosPage {
     public toastCtrl: ToastController,
     private navParams: NavParams,
     private loadingCtrl: LoadingController) {
-    this.presentLoading('Cargando sitios...');
+    this.presentLoading('Obteniendo tu posicion y cargando sitios...');
   }
 
   onPageDidEnter() {
